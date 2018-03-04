@@ -1,7 +1,7 @@
 Asynchronous Programming in Python
 ==================================
 
-You will need to install the proper python packages. This easiest way is with `pip`:
+This is meant to be run with python 3.6.3 (though anything 3.5+ will probably work). You will need to install the proper python packages. The easiest way is with `pip`:
   ```
   pip install -r requirements.txt
   ```
