@@ -62,7 +62,14 @@ async def make_request(q, visited, session):
         pass
 
 async def main():
-    q = asyncio.Queue(MAX_LINKS)
+    global MAX_LINKS
+    args = sys.argv[1:]
+    while len(args) and args[0].startswith('-') and len(args[0]) > 1:
+        arg = args.pop(0)
+        if arg == '-m':
+            MAX_LINKS = int(args.pop(0))
+
+    q = asyncio.Queue(MAX_LINKS//2)
     visited = asyncio.Queue()
 
     q.put_nowait('https://reddit.com')

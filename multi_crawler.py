@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 from urllib.request import urlparse
 
 MAX_LINKS = 50
+NUMBER_WORKERS = 1
 
 def shutdown(q):
     while not q.empty():
@@ -61,12 +62,21 @@ def crawl(q, visited, process):
         make_request(q.get(), q, visited, process)
 
 def main():
-    pool = multiprocessing.Pool(2)
+    global MAX_LINKS, NUMBER_WORKERS
+    args = sys.argv[1:]
+    while len(args) and args[0].startswith('-') and len(args[0]) > 1:
+        arg = args.pop(0)
+        if arg == '-m':
+            MAX_LINKS = int(args.pop(0))
+        elif arg == '-c':
+            NUMBER_WORKERS = int(args.pop(0))
+
+    pool = multiprocessing.Pool(NUMBER_WORKERS)
     m = multiprocessing.Manager()
-    q = m.Queue(MAX_LINKS)
+    q = m.Queue(MAX_LINKS//2)
     visited = m.Queue()
     q.put_nowait('https://reddit.com')
-    pool.map(functools.partial(crawl, q, visited), range(2))
+    pool.map(functools.partial(crawl, q, visited), range(NUMBER_WORKERS))
     pool.close()
 
 if __name__ == "__main__":

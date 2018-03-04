@@ -55,7 +55,14 @@ def make_request(url, q, visited):
         pass
 
 def main():
-    q = queue.Queue(MAX_LINKS)
+    global MAX_LINKS
+    args = sys.argv[1:]
+    while len(args) and args[0].startswith('-') and len(args[0]) > 1:
+        arg = args.pop(0)
+        if arg == '-n':
+            MAX_LINKS = int(args.pop(0))
+
+    q = queue.Queue(MAX_LINKS//2)
     visited = queue.Queue()
 
     q.put('https://reddit.com')
