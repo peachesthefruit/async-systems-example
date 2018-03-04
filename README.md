@@ -12,7 +12,7 @@ Most Linux systems have a `python3-lxml` package that can be installed. I follow
 - https://raspberrypi.stackexchange.com/questions/68894/cant-install-lxml
 - https://stackoverflow.com/questions/5178416/pip-install-lxml-error
 
-I would also recommend installing (https://virtualenv.pypa.io/en/stable/installation/)[virtualenv] so you can install the packages without root privelages. Once installed run the following in the directory with this code:
+I would also recommend installing [virtualenv](https://virtualenv.pypa.io/en/stable/installation/) so you can install the packages without root privelages. Once installed run the following in the directory with this code:
   ```
   virtualenv VENV --python=python3.6
   . VENV/bin/activate
