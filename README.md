@@ -6,7 +6,7 @@ This is meant to be run with python 3.6.3 (though anything 3.5+ will probably wo
   pip install -r requirements.txt
   ```
 
-You might get an error install the `lxml` package, if this is the case Google how to install it on your machine.
+You might get an error installing the `lxml` package, if this is the case Google how to install it on your machine.
 Most Linux systems have a `python3-lxml` package that can be installed. I followed the following posts to get it to work:
 
 - https://raspberrypi.stackexchange.com/questions/68894/cant-install-lxml
