@@ -3,7 +3,7 @@
 gcc -o measure measure.c
 
 REPEATS=5
-MAX_LINKS=100
+MAX_LINKS=200
 
 for file in './multi_crawler.py -c 2' './multi_crawler.py -c 4' './async_crawler.py'; do
   TIME=0
