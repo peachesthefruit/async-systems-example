@@ -46,10 +46,11 @@ def validate_links(link):
     '''Validate if link has http or https and a nonempty domain'''
     return not (urlparse(link).scheme is '' or urlparse(link).netloc is '')
 
-async def make_request(q, visited):
+#TODO make async
+def make_request(q, visited):
     '''Make single request, process html and add links to queue'''
     # Get url from queue
-    url = await q.get()
+    url = q.get()
 
     headers  = {'user-agent': 'reddit-{}'.format(os.environ['USER'])}
     try:
@@ -64,7 +65,7 @@ async def make_request(q, visited):
         if response.status_code == 200: #TODO response.status
             # Add url to visited
             visited.put_nowait(url)
-            if visited.qsize() > MAX_LINKS:
+            if visited.qsize() >= MAX_LINKS:
                 shutdown() #TODO async
                 return
             print('Visited url: {}, visited: {}, length of queue: {}'.format(url, visited.qsize(), q.qsize()))
@@ -83,7 +84,7 @@ async def make_request(q, visited):
     except:
         pass
 
-async def main():
+def main():
     global MAX_LINKS
     args = sys.argv[1:]
     while len(args) and args[0].startswith('-') and len(args[0]) > 1:
@@ -92,8 +93,8 @@ async def main():
             MAX_LINKS = int(args.pop(0))
 
     # Use asyncio queues so they can be handled by different tasks
-    q = queue.Queue(MAX_LINKS//2) #TODO asyncio queue
-    visited = asyncio.Queue()
+    q = queue.Queue(MAX_LINKS) #TODO asyncio queue
+    visited = asyncio.Queue(MAX_LINKS)
 
     q.put_nowait('https://reddit.com')
 
@@ -102,7 +103,7 @@ async def main():
 
     # Make requests until queue is empty TODO async
     while not q.empty():
-        await make_request(q, visited)
+        make_request(q, visited)
 
     # Close session
     #TODO

@@ -10,6 +10,7 @@ def signal_handler(signal, frame):
     sys.exit(0)
 
 def shutdown(q):
+    print('shutting')
     while not q.empty():
         q.get_nowait()
 
@@ -54,7 +55,7 @@ def make_request(url, q, visited, process):
         if response.status_code == 200:
             # Add url to visited
             visited.put_nowait(url)
-            if visited.qsize() > MAX_LINKS:
+            if visited.qsize() >= MAX_LINKS:
                 shutdown(q)
                 return
             print('{}: Visited url: {}, visited: {}, length of queue: {}'.format(process, url, visited.qsize(), q.qsize()))
@@ -88,8 +89,8 @@ def main():
 
     pool = multiprocessing.Pool(NUMBER_WORKERS)
     m = multiprocessing.Manager()
-    q = m.Queue(MAX_LINKS//2)
-    visited = m.Queue()
+    q = m.Queue(MAX_LINKS)
+    visited = m.Queue(MAX_LINKS)
     q.put_nowait('https://reddit.com')
     pool.map(functools.partial(crawl, q, visited), range(NUMBER_WORKERS))
     pool.close()

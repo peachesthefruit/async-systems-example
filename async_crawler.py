@@ -61,7 +61,7 @@ async def make_request(q, visited, session):
         if response.status == 200:
             # Add url to visited
             visited.put_nowait(url)
-            if visited.qsize() > MAX_LINKS:
+            if visited.qsize() >= MAX_LINKS:
                 shutdown()
                 return
             print('Visited url: {}, visited: {}, length of queue: {}'.format(url, visited.qsize(), q.qsize()))
@@ -71,7 +71,7 @@ async def make_request(q, visited, session):
 
             # Add other links to queue
             for link in links:
-                q.put_nowait(link)
+                await q.put(link)
 
                 # Add task to event loop
                 asyncio.ensure_future(make_request(q, visited, session))
@@ -89,8 +89,8 @@ async def main():
         if arg == '-m':
             MAX_LINKS = int(args.pop(0))
 
-    q = asyncio.Queue(MAX_LINKS//2)
-    visited = asyncio.Queue()
+    q = asyncio.Queue(MAX_LINKS)
+    visited = asyncio.Queue(MAX_LINKS)
 
     q.put_nowait('https://reddit.com')
     async with aiohttp.ClientSession(loop=loop) as session:

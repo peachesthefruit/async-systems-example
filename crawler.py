@@ -55,7 +55,7 @@ def make_request(q, visited):
         if response.status_code == 200:
             # Add url to visited
             visited.put_nowait(url)
-            if visited.qsize() > MAX_LINKS:
+            if visited.qsize() >= MAX_LINKS:
                 shutdown()
                 return
             print('Visited url: {}, visited: {}, length of queue: {}'.format(url, visited.qsize(), q.qsize()))
@@ -79,8 +79,8 @@ def main():
         if arg == '-m':
             MAX_LINKS = int(args.pop(0))
 
-    q = queue.Queue(MAX_LINKS//2)
-    visited = queue.Queue()
+    q = queue.Queue(MAX_LINKS)
+    visited = queue.Queue(MAX_LINKS)
 
     q.put('https://reddit.com')
 
