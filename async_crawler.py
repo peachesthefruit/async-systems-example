@@ -46,6 +46,7 @@ def validate_links(link):
 
 async def make_request(q, visited, session):
     '''Make single request, process html and add links to queue'''
+    # Get url from queue
     url = await q.get()
 
     headers  = {'user-agent': 'reddit-{}'.format(os.environ['USER'])}
